@@ -51,13 +51,9 @@ function _gv_get_os_and_arch() {
   echo "$machine-$architecture"
 }
 
-# test whether `g` command has been installed.
-function _gv_test_g() {
-  if [ -e $GV_G ]; then
-    return 0
-  fi
-
-  local g_version="1.1.3"
+# install g
+function _gv_install_g() {
+  local g_version="$1"
   local G_TOOLS="${GV_HOME}/tools"
   mkdir -p "${G_TOOLS}"
   local url="https://github.com/voidint/g/releases/download/v${g_version}/g${g_version}.${GV_OS_ARCH}.tar.gz"
@@ -65,6 +61,16 @@ function _gv_test_g() {
   curl -L -s -o "${dest_file}" "${url}"
   tar -xz -f ${dest_file} -C ${GV_BINARY_PATH}
   chmod +x "${GV_G}"
+}
+
+# test whether `g` command has been installed.
+function _gv_test_g() {
+  if [ -e $GV_G ]; then
+    return 0
+  fi
+
+  local g_version="1.1.3"
+  _gv_install_g "${g_version}"
 }
 
 function gv_list_remote() {
@@ -119,6 +125,7 @@ function gv_help() {
   echo "    install       Install a specific version"
   echo "    use           Switch to specific version"
   echo "    uninstall     Uninstall a specific version"
+  echo "    upgrade       Upgrade internal tool version"
 }
 
 function gv_init() {
@@ -152,6 +159,17 @@ function gv_init() {
   fi
 }
 
+function gv_upgrade() {
+  _gv_test_g
+
+  VERSION="$1"
+  if [[ -z "$VERSION" ]]; then
+    echo "please specify version"
+    return 1
+  fi
+  _gv_install_g "${VERSION}"
+}
+
 function gv() {
   ACTION="$1"
   ACTION_PARAMETER="$2"
@@ -174,6 +192,9 @@ function gv() {
       ;;
     "use")
       gv_use "$ACTION_PARAMETER"
+      ;;
+    "upgrade")
+      gv_upgrade "$ACTION_PARAMETER"
       ;;
     *)
       gv_help
