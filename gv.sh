@@ -57,7 +57,7 @@ function _gv_test_g() {
     return 0
   fi
 
-  local g_version="1.1.1"
+  local g_version="1.1.3"
   local G_TOOLS="${GV_HOME}/tools"
   mkdir -p "${G_TOOLS}"
   local url="https://github.com/voidint/g/releases/download/v${g_version}/g${g_version}.${GV_OS_ARCH}.tar.gz"
