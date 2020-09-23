@@ -64,12 +64,13 @@ function _gv_install_g() {
 }
 
 # test whether `g` command has been installed.
+# TODO: install latest g version
 function _gv_test_g() {
   if [ -e $GV_G ]; then
     return 0
   fi
 
-  local g_version="1.1.3"
+  local g_version="1.2.0"
   _gv_install_g "${g_version}"
 }
 
@@ -126,6 +127,7 @@ function gv_help() {
   echo "    use           Switch to specific version"
   echo "    uninstall     Uninstall a specific version"
   echo "    upgrade       Upgrade internal tool version"
+  echo "    show          Show internal tool version"
 }
 
 function gv_init() {
@@ -170,12 +172,18 @@ function gv_upgrade() {
   _gv_install_g "${VERSION}"
 }
 
+function gv_show() {
+  _gv_test_g
+
+  ${GV_G} --version
+}
+
 function gv() {
   ACTION="$1"
   ACTION_PARAMETER="$2"
 
   _gv_test_requirements
-  [[ $? = 1 ]] && return 1
+  [[ $? == 1 ]] && return 1
 
   case "${ACTION}" in
     "list-remote")
@@ -195,6 +203,9 @@ function gv() {
       ;;
     "upgrade")
       gv_upgrade "$ACTION_PARAMETER"
+      ;;
+    "show")
+      gv_show
       ;;
     *)
       gv_help
