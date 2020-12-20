@@ -128,6 +128,7 @@ function gv_help() {
   echo "    uninstall     Uninstall a specific version"
   echo "    upgrade       Upgrade internal tool version"
   echo "    show          Show internal tool version"
+  echo "    clean         Remove downloaded installation tar.gz"
 }
 
 function gv_init() {
@@ -178,6 +179,12 @@ function gv_show() {
   ${GV_G} --version
 }
 
+function gv_clean() {
+  _gv_test_g
+
+  ${GV_G} clean
+}
+
 function gv() {
   ACTION="$1"
   ACTION_PARAMETER="$2"
@@ -206,6 +213,9 @@ function gv() {
       ;;
     "show")
       gv_show
+      ;;
+    "clean")
+      gv_clean
       ;;
     *)
       gv_help
