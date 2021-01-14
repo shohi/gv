@@ -58,7 +58,13 @@ function _gv_install_g() {
   mkdir -p "${G_TOOLS}"
   local url="https://github.com/voidint/g/releases/download/v${g_version}/g${g_version}.${GV_OS_ARCH}.tar.gz"
   local dest_file="${G_TOOLS}/g${g_version}.${GV_OS_ARCH}.tar.gz"
-  curl -L -s -o "${dest_file}" "${url}"
+  # FIXME: add md5 sumcheck
+  if [ -s "${dest_file}" ]; then
+    # do nothing
+    :
+  else
+    curl -L -s -o "${dest_file}" "${url}"
+  fi
   tar -xz -f ${dest_file} -C ${GV_BINARY_PATH}
   chmod +x "${GV_G}"
 }
